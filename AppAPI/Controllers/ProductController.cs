@@ -21,5 +21,11 @@ namespace AppApi.Controllers
 			var danhSach = await _context.Products.Include(b => b.Brand).Include(c => c.Category).ToListAsync();
 			return Ok(danhSach);
 		}
+		[HttpGet("{id}")]
+		public async Task<ActionResult> GetProductById(int id)
+		{
+			var productById = await _context.Products.Include(x => x.Brand).FirstOrDefaultAsync(x => x.Id == id);
+			return Ok(productById);
+		}
 	}
 }

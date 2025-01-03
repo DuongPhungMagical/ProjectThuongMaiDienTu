@@ -1,4 +1,4 @@
-using AppModel.Repository;
+﻿using AppModel.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppView
@@ -13,8 +13,17 @@ namespace AppView
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddHttpClient();
-            
+
+            //đăng kí session
+            builder.Services.AddSession(option =>
+            {
+                option.IdleTimeout = TimeSpan.FromMinutes(30);
+                option.Cookie.IsEssential = true;
+                option.Cookie.HttpOnly = true;
+            });         
             var app = builder.Build();
+
+            app.UseSession();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

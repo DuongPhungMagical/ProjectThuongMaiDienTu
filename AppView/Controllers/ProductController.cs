@@ -1,6 +1,7 @@
 ﻿using AppModel;
 using AppModel.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace AppView.Controllers
@@ -16,14 +17,18 @@ namespace AppView.Controllers
 		}
 		public async Task<IActionResult> Index()
 		{
-			string requestUrl = $@"https://localhost:7142/api/Product";
-			var responseBody = await _client.GetStringAsync(requestUrl);
-			var data = JsonConvert.DeserializeObject<List<ProductModel>>(responseBody);
-			return View(data);
-		}
-		public IActionResult Details()
-		{
 			return View();
+		}
+		public async Task<IActionResult> Details(int id)
+		{
+			if (id == null)
+			{
+				return RedirectToAction("Index");
+			}
+			string resquestUrl = $@"https://localhost:7142/api/Product/{id}";
+			var reponseBody = await _client.GetStringAsync(resquestUrl);
+			var data = JsonConvert.DeserializeObject<ProductModel>(reponseBody);
+			return View(data);
 		}
 	}
 }

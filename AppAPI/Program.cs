@@ -1,4 +1,4 @@
-using AppModel.Repository;
+﻿using AppModel.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI
@@ -16,11 +16,20 @@ namespace AppAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+			builder.Services.AddDistributedMemoryCache();
+			//đăng kí session
+			builder.Services.AddSession(option =>
+			{
+				option.IdleTimeout = TimeSpan.FromMinutes(30);
+				option.Cookie.IsEssential = true;
+				option.Cookie.HttpOnly = true;
+			});
+			var app = builder.Build();
+			
+            app.UseSession();
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
